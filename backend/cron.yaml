@@ -1,0 +1,5 @@
+cron:
+    - description: 'Pull sensor data to firestore every 1 hour.'
+      target: default
+      url: /pull-data
+      schedule: every 1 hours
