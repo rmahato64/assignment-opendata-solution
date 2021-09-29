@@ -1,6 +1,4 @@
 import { DocumentReference, Firestore } from '@google-cloud/firestore';
-<<<<<<< Updated upstream
-=======
 import { getSensorData } from './sensor';
 
 class Data {
@@ -11,7 +9,6 @@ class Data {
     sensor4: number;
     addedOn?: string;
 }
->>>>>>> Stashed changes
 
 const {
     PROJECT_ID,
@@ -33,4 +30,11 @@ export function getAll() {
             snapshot.forEach((doc) => data.push(doc.data()));
             return data;
         })
+};
+
+export async function collectSensorData() {
+    const data: Data = await getSensorData() as Data;
+    data.addedOn = new Date().toUTCString();
+    return firestore.collection('SensorData')
+        .add(data);
 };
