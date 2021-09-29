@@ -1,7 +1,7 @@
 import * as cors from 'cors';
 import * as express from 'express';
 import * as dotenv from 'dotenv';
-import { getAll } from './firebase';
+import { getAll, collectSensorData } from './firebase';
 
 const app = express();
 app.use(cors());
@@ -12,6 +12,16 @@ app.get('/', async (req, res) => {
     try {
         const data = await getAll();
         res.status(200).send(data);
+    }
+    catch (e) {
+        res.status(400).send(e);
+    };
+});
+
+app.get('/pull-data', async (req, res) => {
+    try {
+        await collectSensorData();
+        res.status(200).send('Data fetched!!');
     }
     catch (e) {
         res.status(400).send(e);
