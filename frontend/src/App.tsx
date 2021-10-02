@@ -2,7 +2,10 @@ import React from 'react';
 import useFetch from 'react-fetch-hook';
 import logo from './logo.svg';
 import './App.css';
-import { Data } from './types';
+import { Data, SENSOR_KEYS } from './types';
+import moment from 'moment';
+import * as Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 const API_URL = 'https://winged-odyssey-244910.ew.r.appspot.com/';
 
@@ -12,22 +15,28 @@ const App = (): React.ReactElement => {
   if (error?.message) {
     return <div>{error?.message}</div>;
   }
+  const options = {
+    title: {
+        text: 'Sensor data',
+    },
+    xAxis: {
+        categories: (data || []).map((d) =>
+        moment(d.date).format('DD.MM.y HH:mm')
+      ),
+    },
+    series: SENSOR_KEYS.map((key) => ({
+      name: key,
+      data: (data || []).map((d) => d[key as keyof Data]),
+    })),
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isLoading ? (
+        'Loading....'
+      ) : (
+        <HighchartsReact highcharts={Highcharts} options={options} />
+      )}
     </div>
   );
 }
